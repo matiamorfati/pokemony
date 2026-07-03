@@ -1,7 +1,7 @@
 {
   "name": "pokemony",
   "version": "1.0.0",
-  "main": "index.ts",
+  "main": "expo-router/entry",
   "dependencies": {
     "@tanstack/react-query": "^5.101.2",
     "expo": "~57.0.2",
