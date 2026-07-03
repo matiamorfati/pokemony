@@ -1,5 +1,5 @@
 import { ActivityIndicator, FlatList, Text, View } from "react-native";
-import { PokemonListItem } from "../../../components/listItem";
+import { PokemonListItem } from "../../../components/PokemonListItem";
 import { usePokemonList } from "../../../hooks/usePokemonList";
 
 export default function PokemonListScreen() {

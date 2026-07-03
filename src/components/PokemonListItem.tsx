@@ -1,4 +1,5 @@
 import { Text, View } from "react-native";
+import { Link } from "expo-router";
 
 type Props = {
   name: string;
@@ -6,8 +7,10 @@ type Props = {
 
 export function PokemonListItem({ name }: Props) {
   return (
-    <View>
-      <Text>{name}</Text>
-    </View>
+    <Link href={`./pokemon/${name}`}>
+      <View>
+        <Text>{name}</Text>
+      </View>
+    </Link>
   );
 }
