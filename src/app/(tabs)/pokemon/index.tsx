@@ -1,5 +1,5 @@
 import { ActivityIndicator, FlatList, Text, View } from "react-native";
-
+import { PokemonListItem } from "../../../components/listItem";
 import { usePokemonList } from "../../../hooks/usePokemonList";
 
 export default function PokemonListScreen() {
@@ -24,7 +24,7 @@ export default function PokemonListScreen() {
     <FlatList
       data={data ?? []}
       keyExtractor={(item) => item.name}
-      renderItem={({ item }) => <Text>{item.name}</Text>}
+      renderItem={({ item }) => <PokemonListItem name={item.name} />}
     />
   );
 }
