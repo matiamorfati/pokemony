@@ -1,3 +1,30 @@
-export default function index() {
-  return <text>pokemon list</text>;
-}   
+import { ActivityIndicator, FlatList, Text, View } from "react-native";
+
+import { usePokemonList } from "../../../hooks/usePokemonList";
+
+export default function PokemonListScreen() {
+  const { data, isLoading, isError } = usePokemonList();
+
+  if (isLoading) {
+    return (
+      <View>
+        <ActivityIndicator />
+        <Text>Loading Pokemon...</Text>
+      </View>
+    );
+  } else if (isError) {
+    return (
+      <View>
+        <Text>Something went wrong!</Text>
+      </View>
+    );
+  }
+
+  return (
+    <FlatList
+      data={data ?? []}
+      keyExtractor={(item) => item.name}
+      renderItem={({ item }) => <Text>{item.name}</Text>}
+    />
+  );
+}
