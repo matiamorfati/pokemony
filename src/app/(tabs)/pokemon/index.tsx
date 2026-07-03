@@ -3,7 +3,7 @@ import { PokemonListItem } from "../../../components/PokemonListItem";
 import { usePokemonList } from "../../../hooks/usePokemonList";
 
 export default function PokemonListScreen() {
-  const { data, isLoading, isError } = usePokemonList();
+  const { data, isLoading, isError, refetch } = usePokemonList();
 
   if (isLoading) {
     return (
@@ -16,6 +16,7 @@ export default function PokemonListScreen() {
     return (
       <View>
         <Text>Something went wrong!</Text>
+        <Text onPress={() => refetch()}>Try again</Text>
       </View>
     );
   }
