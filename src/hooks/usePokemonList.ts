@@ -1,14 +1,18 @@
-import { useQuery } from "@tanstack/react-query";
+import { useInfiniteQuery } from "@tanstack/react-query";
 import { getPokemonPage } from "../api/pokemonAPI";
 
-const PAGE_SIZE = 20;
+const POKEMON_LIMIT = 20;
 
 export function usePokemonList() {
-  return useQuery({
+  return useInfiniteQuery({
     queryKey: ["pokemonList"],
-    queryFn: async () => {
-      const response = await getPokemonPage(0, PAGE_SIZE);
-      return response.results;
+    queryFn: ({ pageParam }) => getPokemonPage(pageParam, POKEMON_LIMIT),
+    initialPageParam: 0,
+    getNextPageParam: (lastPage, allPages) => {
+      if (!lastPage.next) {
+        return undefined;
+      }
+      return allPages.length * POKEMON_LIMIT;
     },
   });
 }
