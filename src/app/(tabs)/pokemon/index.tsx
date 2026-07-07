@@ -1,3 +1,4 @@
+import { useState } from "react";
 import {
   ActivityIndicator,
   FlatList,
@@ -5,10 +6,15 @@ import {
   View,
   StyleSheet,
 } from "react-native";
+import { PokemonDetailsView } from "../../../components/PokemonDetailsView";
 import { PokemonListItem } from "../../../components/PokemonListItem";
 import { usePokemonList } from "../../../hooks/usePokemonList";
+import { useFavouritePokemon } from "../../../hooks/useFavouritePokemon";
 
 export default function PokemonListScreen() {
+  const [selectedPokemonName, setSelectedPokemonName] = useState<string | null>(
+    null,
+  );
   const {
     data,
     isLoading,
@@ -20,7 +26,7 @@ export default function PokemonListScreen() {
   } = usePokemonList();
 
   const pokemon = data?.pages.flatMap((page) => page.results) ?? [];
-
+  const { favouriteName } = useFavouritePokemon();
   if (isLoading) {
     return (
       <View>
@@ -38,36 +44,49 @@ export default function PokemonListScreen() {
   }
 
   return (
-    <FlatList
-      data={pokemon}
-      keyExtractor={(item) => item.name}
-      renderItem={({ item }) => (
-        <PokemonListItem
-          name={item.name}
-          imageURL={item.imageURL}
-          onPress={() => {
-            return 0;
-          }}
-        />
-      )}
-      onEndReached={() => {
-        if (hasNextPage && !isFetchingNextPage) {
-          fetchNextPage();
-        }
-      }}
-      onEndReachedThreshold={0.5}
-      ListFooterComponent={isFetchingNextPage ? <ActivityIndicator /> : null}
-      contentContainerStyle={styles.container}
-    />
+    <View style={styles.screen}>
+      <FlatList
+        data={pokemon}
+        numColumns={2}
+        keyExtractor={(item) => item.name}
+        columnWrapperStyle={styles.row}
+        renderItem={({ item }) => (
+          <PokemonListItem
+            pokemon={item}
+            onPress={() => setSelectedPokemonName(item.name)}
+            isFavourite={favouriteName === item.name}
+          />
+        )}
+        onEndReached={() => {
+          if (hasNextPage && !isFetchingNextPage) {
+            fetchNextPage();
+          }
+        }}
+        onEndReachedThreshold={0.5}
+        ListFooterComponent={isFetchingNextPage ? <ActivityIndicator /> : null}
+        contentContainerStyle={styles.container}
+      />
+
+      <PokemonDetailsView
+        pokemonName={selectedPokemonName}
+        onClose={() => setSelectedPokemonName(null)}
+      />
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
+  screen: {
+    flex: 1,
+    backgroundColor: "#f3f4f6",
+  },
   container: {
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "center",
-    justifyContent: "center",
-    padding: 16,
+    paddingHorizontal: 10,
+    paddingTop: 12,
+    paddingBottom: 24,
+    backgroundColor: "#f3f4f6",
+  },
+  row: {
+    justifyContent: "space-between",
   },
 });

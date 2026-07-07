@@ -1,9 +1,25 @@
 import type {
   pokemonListApiResponse,
   pokemonListResponse,
+  PokemonDetailsApiResponse,
+  PokemonDetailsResponse,
 } from "../types/pokemon";
 
 const URL = "https://pokeapi.co/api/v2/";
+
+export async function getPokemonDetails(
+  name: string,
+): Promise<PokemonDetailsResponse> {
+  const response = await fetch(`${URL}/pokemon/${name}`);
+  if (!response.ok) {
+    throw new Error(`Failed to fetch pokemon details: ${response.status}`);
+  }
+  const data: PokemonDetailsApiResponse = await response.json();
+  return {
+    ...data,
+    imageURL: getPokemonDetailImageURL(data.id),
+  };
+}
 
 export async function getPokemonPage(
   offset: number,
@@ -17,16 +33,44 @@ export async function getPokemonPage(
     throw new Error(`Failed to fetch pokemon page: ${response.status}`);
   }
   const data: pokemonListApiResponse = await response.json();
+  const results = await Promise.all(
+    data.results.map((pokemon) => enrichPokemonListItem(pokemon)),
+  );
+
   return {
     ...data,
-    results: data.results.map((pokemon) => {
-      const id = getPokemonIdFromUrl(pokemon.url);
-      return {
-        ...pokemon,
-        id,
-        imageURL: getPokemonListImageURL(id),
-      };
-    }),
+    results,
+  };
+}
+
+async function enrichPokemonListItem(
+  pokemon: pokemonListApiResponse["results"][number],
+): Promise<pokemonListResponse["results"][number]> {
+  const response = await fetch(pokemon.url);
+
+  if (!response.ok) {
+    const id = getPokemonIdFromUrl(pokemon.url);
+
+    return {
+      ...pokemon,
+      id,
+      imageURL: getPokemonListImageURL(id),
+      primaryType: "normal",
+    };
+  }
+
+  const data: Pick<PokemonDetailsApiResponse, "id" | "types"> =
+    await response.json();
+  const primaryType =
+    data.types.find((type) => type.slot === 1)?.type.name ??
+    data.types[0]?.type.name ??
+    "normal";
+
+  return {
+    ...pokemon,
+    id: data.id,
+    imageURL: getPokemonListImageURL(data.id),
+    primaryType,
   };
 }
 
