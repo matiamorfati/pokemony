@@ -78,13 +78,13 @@ export default function PokemonListScreen() {
 const styles = StyleSheet.create({
   screen: {
     flex: 1,
-    backgroundColor: "#f3f4f6",
+    backgroundColor: "#F7F4F3",
   },
   container: {
     paddingHorizontal: 10,
     paddingTop: 12,
     paddingBottom: 24,
-    backgroundColor: "#f3f4f6",
+    backgroundColor: "##F7F4F3",
   },
   row: {
     justifyContent: "space-between",

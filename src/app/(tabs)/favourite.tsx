@@ -14,8 +14,11 @@ import { usePokemonDetails } from "../../hooks/usePokemonDetails";
 
 export default function FavouriteScreen() {
   const router = useRouter();
-  const { favouriteName, isLoading: isFavouriteLoading, removeFavourite } =
-    useFavouritePokemon();
+  const {
+    favouriteName,
+    isLoading: isFavouriteLoading,
+    removeFavourite,
+  } = useFavouritePokemon();
   const {
     data: pokemon,
     isLoading: isPokemonLoading,
@@ -65,7 +68,9 @@ export default function FavouriteScreen() {
     return (
       <View style={styles.screen}>
         <View style={styles.emptyCard}>
-          <Text style={styles.emptyTitle}>Could not load favourite Pokémon</Text>
+          <Text style={styles.emptyTitle}>
+            Could not load favourite Pokémon
+          </Text>
           <Text style={styles.emptyDescription}>
             Something went wrong while loading {favouriteName}.
           </Text>
@@ -106,14 +111,14 @@ export default function FavouriteScreen() {
 const styles = StyleSheet.create({
   screen: {
     flex: 1,
-    backgroundColor: "#f3f4f6",
+    backgroundColor: "#F7F4F3",
   },
 
   centeredContainer: {
     flex: 1,
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: "#f3f4f6",
+    backgroundColor: "#F7F4F3",
   },
 
   scrollContent: {

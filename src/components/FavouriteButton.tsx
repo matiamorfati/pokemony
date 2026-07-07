@@ -28,7 +28,6 @@ export function FavouriteButton({
     </Pressable>
   );
 }
-
 const styles = StyleSheet.create({
   button: {
     paddingVertical: 14,
