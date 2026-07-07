@@ -7,6 +7,26 @@ import type {
 
 const URL = "https://pokeapi.co/api/v2/";
 
+export async function getRandomPokemonMarker(): Promise<{
+  name: string;
+  imageURL: string;
+}> {
+  const id = Math.floor(Math.random() * 151) + 1;
+  const response = await fetch(`${URL}/pokemon/${id}`);
+
+  if (!response.ok) {
+    throw new Error(`Failed to fetch random pokemon: ${response.status}`);
+  }
+
+  const data: Pick<PokemonDetailsApiResponse, "name" | "id"> =
+    await response.json();
+
+  return {
+    name: data.name,
+    imageURL: getPokemonListImageURL(data.id),
+  };
+}
+
 export async function getPokemonDetails(
   name: string,
 ): Promise<PokemonDetailsResponse> {

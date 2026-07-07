@@ -1,5 +1,13 @@
 {
   "expo": {
+    "plugins": [
+      [
+        "expo-location",
+        {
+          "locationWhenInUsePermission": "Allow Pokemony to use your location on the map."
+        }
+      ]
+    ],
     "name": "pokemony",
     "slug": "pokemony",
     "version": "1.0.0",
