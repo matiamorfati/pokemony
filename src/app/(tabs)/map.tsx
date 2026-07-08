@@ -14,8 +14,8 @@ const MAP_ZOOM = {
 };
 
 const FALLBACK_REGION = {
-  latitude: 19.996300726106693,
-  longitude: 50.09090669695661,
+  latitude: 50.09090669695661,
+  longitude: 19.996300726106693,
   ...MAP_ZOOM,
 };
 
