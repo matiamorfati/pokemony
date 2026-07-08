@@ -9,7 +9,7 @@ export function useCameraPermissionHook() {
   useEffect(() => {
     let isMounted = true;
 
-    async function requestPermission() {
+    async function ensurePermission() {
       if (hasPermission) {
         if (isMounted) {
           setIsLoading(false);
@@ -37,7 +37,7 @@ export function useCameraPermissionHook() {
       }
     }
 
-    void requestPermission();
+    void ensurePermission();
     return () => {
       isMounted = false;
     };
