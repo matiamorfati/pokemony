@@ -1,8 +1,10 @@
 import { useEffect, useState } from "react";
 import { useCameraPermission } from "react-native-vision-camera";
+import { useOpenAppSettings } from "./useOpenAppSettings";
 
 export function useCameraPermissionHook() {
-  const { hasPermission, requestPermission } = useCameraPermission();
+  const { hasPermission, requestPermission, canRequestPermission } =
+    useCameraPermission();
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -16,6 +18,7 @@ export function useCameraPermissionHook() {
         }
         return;
       }
+
       try {
         await requestPermission();
         if (isMounted) {
@@ -48,5 +51,6 @@ export function useCameraPermissionHook() {
     error,
     permissionDenied: !isLoading && !hasPermission,
     requestPermission,
+    canRequestPermission,
   };
 }
