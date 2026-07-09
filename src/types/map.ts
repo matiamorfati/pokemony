@@ -5,4 +5,5 @@ export type MapMarker = {
   name: string;
   pokemonId: number;
   imageURL: string;
+  opened: boolean;
 };

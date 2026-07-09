@@ -5,26 +5,32 @@ import { MapMarker } from "../types/map";
 
 type PokemonMapMarkerProps = {
   marker: MapMarker;
-  onPress: () => void;
+  opened: boolean;
+  onPressOpen: () => void;
+  onPressShow: () => void;
 };
 const placeholderImage = require("../../assets/icons/pokemon-marker-placeholder.svg");
 
-export function PokemonMapMarker({ marker, onPress }: PokemonMapMarkerProps) {
+export function PokemonMapMarker({
+  marker,
+  opened,
+  onPressOpen,
+  onPressShow,
+}: PokemonMapMarkerProps) {
   return (
     <Marker
       coordinate={{
         latitude: marker.latitude,
         longitude: marker.longitude,
       }}
-      onPress={onPress}
-      tracksViewChanges={false}
+      onPress={opened ? onPressShow : onPressOpen}
+      tracksViewChanges={true}
       anchor={{ x: 0.5, y: 0.5 }}
     >
       <Image
-        source={{ uri: marker.imageURL }}
+        source={opened ? { uri: marker.imageURL } : placeholderImage}
         style={styles.sprite}
-        placeholder={placeholderImage}
-        transition={300}
+        transition={200}
         contentFit="contain"
         contentPosition="center"
         cachePolicy="memory-disk"

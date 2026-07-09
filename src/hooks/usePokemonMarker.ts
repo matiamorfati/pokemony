@@ -7,7 +7,11 @@ export function usePokemonMarker() {
   const [markers, setMarkers] = useState<MapMarker[]>([]);
   const [isAdding, setIsAdding] = useState(false);
   const [error, setError] = useState<string | null>(null);
-
+  const openMarker = useCallback((markerId: string) => {
+    setMarkers((current) =>
+      current.map((m) => (m.id === markerId ? { ...m, opened: true } : m)),
+    );
+  }, []);
   const addMarker = useCallback(async (latitude: number, longitude: number) => {
     setIsAdding(true);
     setError(null);
@@ -21,6 +25,7 @@ export function usePokemonMarker() {
         name: pokemon.name,
         pokemonId: pokemon.pokemonId,
         imageURL: pokemon.imageURL,
+        opened: false,
       };
 
       setMarkers((currentMarkers) => [...currentMarkers, newMarker]);
@@ -35,5 +40,5 @@ export function usePokemonMarker() {
     }
   }, []);
 
-  return { markers, addMarker, isAdding, error };
+  return { markers, addMarker, isAdding, error, openMarker };
 }

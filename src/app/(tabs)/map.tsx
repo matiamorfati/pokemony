@@ -38,6 +38,7 @@ export default function MapScreen() {
   const {
     markers,
     addMarker,
+    openMarker,
     isAdding,
     error: markerError,
   } = usePokemonMarker();
@@ -97,9 +98,11 @@ export default function MapScreen() {
       >
         {markers.map((marker) => (
           <PokemonMapMarker
+            opened={marker.opened}
             key={marker.id}
             marker={marker}
-            onPress={() => setSelectedMarker(marker)}
+            onPressOpen={() => openMarker(marker.id)}
+            onPressShow={() => setSelectedMarker(marker)}
           />
         ))}
       </MapView>

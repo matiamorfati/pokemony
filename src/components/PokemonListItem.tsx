@@ -53,7 +53,7 @@ export function PokemonListItem({
           source={{ uri: pokemon.imageURL }}
           style={styles.image}
           placeholder={placeholderImage}
-          transition={100}
+          transition={200}
           contentFit="contain"
           contentPosition="center"
           cachePolicy="memory-disk"
