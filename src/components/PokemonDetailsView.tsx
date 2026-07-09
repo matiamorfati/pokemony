@@ -123,7 +123,10 @@ export function PokemonDetailsView({
                 showsVerticalScrollIndicator={false}
                 contentContainerStyle={styles.scrollContent}
               >
-                <PokemonDetailsContent pokemon={pokemon} />
+                <PokemonDetailsContent
+                  pokemon={pokemon}
+                  isFavourite={isFavourite}
+                />
               </ScrollView>
 
               <View style={styles.footer}>

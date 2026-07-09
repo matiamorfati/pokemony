@@ -19,6 +19,7 @@ export default function CameraScreen() {
     permissionDenied,
     requestPermission,
     canRequestPermission,
+    openAppSettings,
   } = useCameraPermissionHook();
 
   if (isLoading) {
@@ -35,8 +36,8 @@ export default function CameraScreen() {
       <View>
         <Text>Camera permission denied.</Text>
         <Button
-          title="Grant permission"
-          onPress={canRequestPermission ? requestPermission : undefined}
+          title={canRequestPermission ? "Grant permission" : "Open settings"}
+          onPress={canRequestPermission ? requestPermission : openAppSettings}
         ></Button>
         {error && <Text>{error}</Text>}
       </View>

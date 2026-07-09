@@ -1,5 +1,5 @@
-import { Image, StyleSheet, Text, View } from "react-native";
-
+import { StyleSheet, Text, View } from "react-native";
+import { Image } from "expo-image";
 import {
   getPokemonTypeColor,
   getPokemonTypeTextColor,
@@ -8,9 +8,14 @@ import { PokemonDetailsResponse } from "../types/pokemon";
 
 type PokemonDetailsContentProps = {
   pokemon: PokemonDetailsResponse;
+  isFavourite: boolean;
 };
-
-export function PokemonDetailsContent({ pokemon }: PokemonDetailsContentProps) {
+const favouritePlaceholderImage = require("../../assets/icons/favourite-pokemon-placeholder.svg");
+const placeholderImage = require("../../assets/icons/pokemon-placeholder.svg");
+export function PokemonDetailsContent({
+  pokemon,
+  isFavourite,
+}: PokemonDetailsContentProps) {
   const primaryType =
     pokemon.types.find((type) => type.slot === 1)?.type.name ??
     pokemon.types[0]?.type.name ??
@@ -28,7 +33,19 @@ export function PokemonDetailsContent({ pokemon }: PokemonDetailsContentProps) {
         </Text>
 
         {artworkUrl ? (
-          <Image source={{ uri: artworkUrl }} style={styles.artwork} />
+          <Image
+            source={{ uri: artworkUrl }}
+            style={styles.artwork}
+            placeholder={
+              isFavourite ? favouritePlaceholderImage : placeholderImage
+            }
+            transition={100}
+            contentFit="contain"
+            contentPosition="center"
+            cachePolicy="memory-disk"
+            recyclingKey={pokemon.id.toString()}
+            accessibilityLabel={pokemon.name}
+          />
         ) : (
           <View style={styles.artworkPlaceholder}>
             <Text style={styles.artworkPlaceholderText}>No image</Text>

@@ -6,7 +6,8 @@
         {
           "locationWhenInUsePermission": "Allow Pokemony to use your location on the map."
         }
-      ]
+      ],
+      "expo-image"
     ],
     "name": "pokemony",
     "slug": "pokemony",

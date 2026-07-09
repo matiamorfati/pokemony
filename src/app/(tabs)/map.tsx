@@ -1,5 +1,11 @@
 import { useState } from "react";
-import { ActivityIndicator, StyleSheet, Text, View } from "react-native";
+import {
+  ActivityIndicator,
+  Button,
+  StyleSheet,
+  Text,
+  View,
+} from "react-native";
 import MapView, { LongPressEvent } from "react-native-maps";
 
 import { PokemonDetailsView } from "../../components/PokemonDetailsView";
@@ -20,7 +26,15 @@ const FALLBACK_REGION = {
 };
 
 export default function MapScreen() {
-  const { location, isLoading, permissionDenied, error } = useUserLocation();
+  const {
+    location,
+    isLoading,
+    permissionDenied,
+    error,
+    openAppSettings,
+    // retry,
+    canAskAgain,
+  } = useUserLocation();
   const {
     markers,
     addMarker,
@@ -62,6 +76,10 @@ export default function MapScreen() {
               ? "Location permission denied. Showing default area."
               : error}
           </Text>
+          <Button
+            title={canAskAgain ? "Grant permission" : "Open settings"}
+            onPress={canAskAgain ? /*retry*/ undefined : openAppSettings}
+          />
         </View>
       )}
 

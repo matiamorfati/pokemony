@@ -1,4 +1,5 @@
-import { Image, Pressable, StyleSheet, Text, View } from "react-native";
+import { Pressable, StyleSheet, Text, View } from "react-native";
+import { Image } from "expo-image";
 
 import {
   getPokemonTypeColor,
@@ -13,6 +14,7 @@ type Props = {
 };
 
 const STAR_PATTERN_ROW_OFFSETS = [0, 14, 0, 14, 0, 14, 0];
+const placeholderImage = require("../../assets/icons/pokemon-placeholder.svg");
 
 function FavouriteStarPattern() {
   return (
@@ -47,7 +49,17 @@ export function PokemonListItem({
       {isFavourite ? <FavouriteStarPattern /> : null}
 
       <View style={styles.imageWrapper}>
-        <Image source={{ uri: pokemon.imageURL }} style={styles.image} />
+        <Image
+          source={{ uri: pokemon.imageURL }}
+          style={styles.image}
+          placeholder={placeholderImage}
+          transition={100}
+          contentFit="contain"
+          contentPosition="center"
+          cachePolicy="memory-disk"
+          recyclingKey={pokemon.id.toString()}
+          accessibilityLabel={pokemon.name}
+        />
       </View>
 
       <Text style={[styles.name, { color: textColor }]} numberOfLines={1}>
@@ -105,7 +117,6 @@ const styles = StyleSheet.create({
   image: {
     width: 88,
     height: 88,
-    resizeMode: "contain",
   },
   name: {
     marginTop: 10,

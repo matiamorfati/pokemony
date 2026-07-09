@@ -10,6 +10,7 @@ const URL = "https://pokeapi.co/api/v2/";
 export async function getRandomPokemonMarker(): Promise<{
   name: string;
   imageURL: string;
+  pokemonId: number;
 }> {
   const id = Math.floor(Math.random() * 151) + 1;
   const response = await fetch(`${URL}/pokemon/${id}`);
@@ -23,6 +24,7 @@ export async function getRandomPokemonMarker(): Promise<{
 
   return {
     name: data.name,
+    pokemonId: data.id,
     imageURL: getPokemonListImageURL(data.id),
   };
 }

@@ -1,12 +1,13 @@
-import { Image, StyleSheet } from "react-native";
+import { StyleSheet } from "react-native";
 import { Marker } from "react-native-maps";
-
+import { Image } from "expo-image";
 import { MapMarker } from "../types/map";
 
 type PokemonMapMarkerProps = {
   marker: MapMarker;
   onPress: () => void;
 };
+const placeholderImage = require("../../assets/icons/pokemon-placeholder.svg");
 
 export function PokemonMapMarker({ marker, onPress }: PokemonMapMarkerProps) {
   return (
@@ -19,15 +20,25 @@ export function PokemonMapMarker({ marker, onPress }: PokemonMapMarkerProps) {
       tracksViewChanges={false}
       anchor={{ x: 0.5, y: 0.5 }}
     >
-      <Image source={{ uri: marker.imageURL }} style={styles.sprite} />
+      <Image
+        source={{ uri: marker.imageURL }}
+        style={styles.sprite}
+        placeholder={placeholderImage}
+        transition={100}
+        contentFit="contain"
+        contentPosition="center"
+        cachePolicy="memory-disk"
+        recyclingKey={marker.pokemonId.toString()}
+        accessibilityLabel={marker.name}
+      />
     </Marker>
   );
 }
 
 const styles = StyleSheet.create({
   sprite: {
-    width: 48,
-    height: 48,
+    width: 64,
+    height: 64,
     resizeMode: "contain",
   },
 });

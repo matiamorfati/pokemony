@@ -3,5 +3,6 @@ export type MapMarker = {
   latitude: number;
   longitude: number;
   name: string;
+  pokemonId: number;
   imageURL: string;
 };

@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import * as Location from "expo-location";
+import { useOpenAppSettings } from "./useOpenAppSettings";
 
 type Coordinates = {
   latitude: number;
@@ -11,18 +12,22 @@ export function useUserLocation() {
   const [isLoading, setIsLoading] = useState(true);
   const [permissionDenied, setPermissionDenied] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [canAskAgain, setCanAskAgain] = useState(true);
+  const { openAppSettings } = useOpenAppSettings();
 
   useEffect(() => {
     let isMounted = true;
 
     async function loadLocation() {
       try {
-        const { status } = await Location.requestForegroundPermissionsAsync();
+        const { status, canAskAgain } =
+          await Location.requestForegroundPermissionsAsync();
 
         if (status !== "granted") {
           if (isMounted) {
             setPermissionDenied(true);
             setIsLoading(false);
+            setCanAskAgain(canAskAgain);
           }
           return;
         }
@@ -55,5 +60,13 @@ export function useUserLocation() {
     };
   }, []);
 
-  return { location, isLoading, permissionDenied, error };
+  return {
+    location,
+    isLoading,
+    permissionDenied,
+    error,
+    openAppSettings,
+    canAskAgain,
+    //   retry: loadLocation,
+  };
 }

@@ -7,6 +7,7 @@ export function useCameraPermissionHook() {
     useCameraPermission();
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const { openAppSettings } = useOpenAppSettings();
 
   useEffect(() => {
     let isMounted = true;
@@ -18,7 +19,6 @@ export function useCameraPermissionHook() {
         }
         return;
       }
-
       try {
         await requestPermission();
         if (isMounted) {
@@ -29,7 +29,7 @@ export function useCameraPermissionHook() {
           setError(
             loadError instanceof Error
               ? loadError.message
-              : "Failed to get location",
+              : "Failed to get camera permission",
           );
           setIsLoading(false);
         }
@@ -52,5 +52,6 @@ export function useCameraPermissionHook() {
     permissionDenied: !isLoading && !hasPermission,
     requestPermission,
     canRequestPermission,
+    openAppSettings,
   };
 }

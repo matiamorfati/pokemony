@@ -19,6 +19,7 @@ export function usePokemonMarker() {
         latitude,
         longitude,
         name: pokemon.name,
+        pokemonId: pokemon.pokemonId,
         imageURL: pokemon.imageURL,
       };
 
