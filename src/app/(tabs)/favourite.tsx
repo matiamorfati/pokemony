@@ -93,7 +93,7 @@ export default function FavouriteScreen() {
       >
         <Text style={styles.screenLabel}>Your favourite Pokémon</Text>
         <View style={styles.card}>
-          <PokemonDetailsContent pokemon={pokemon} />
+          <PokemonDetailsContent pokemon={pokemon} isFavourite={true} />
         </View>
       </ScrollView>
 

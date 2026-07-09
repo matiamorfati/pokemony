@@ -23,6 +23,7 @@ export default function Layout() {
         name="pokemon"
         options={{
           title: "Pokémon List",
+          headerShown: false,
           tabBarIcon: ({ color, size, focused }) => (
             <Ionicons
               name={focused ? "list-sharp" : "list-outline"}
@@ -36,6 +37,7 @@ export default function Layout() {
         name="map"
         options={{
           title: "Map",
+          headerShown: false,
           tabBarIcon: ({ color, size, focused }) => (
             <Ionicons
               name={focused ? "map" : "map-outline"}
@@ -49,6 +51,7 @@ export default function Layout() {
         name="camera"
         options={{
           title: "Camera",
+          headerShown: false,
           tabBarIcon: ({ color, size, focused }) => (
             <Ionicons
               name={focused ? "camera" : "camera-outline"}
@@ -62,6 +65,7 @@ export default function Layout() {
         name="favourite"
         options={{
           title: "Favourite",
+          headerShown: false,
           tabBarIcon: ({ color, size, focused }) => (
             <Ionicons
               name={focused ? "heart" : "heart-outline"}

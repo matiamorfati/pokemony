@@ -7,7 +7,7 @@ type PokemonMapMarkerProps = {
   marker: MapMarker;
   onPress: () => void;
 };
-const placeholderImage = require("../../assets/icons/pokemon-placeholder.svg");
+const placeholderImage = require("../../assets/icons/pokemon-marker-placeholder.svg");
 
 export function PokemonMapMarker({ marker, onPress }: PokemonMapMarkerProps) {
   return (
@@ -24,7 +24,7 @@ export function PokemonMapMarker({ marker, onPress }: PokemonMapMarkerProps) {
         source={{ uri: marker.imageURL }}
         style={styles.sprite}
         placeholder={placeholderImage}
-        transition={100}
+        transition={300}
         contentFit="contain"
         contentPosition="center"
         cachePolicy="memory-disk"
@@ -39,6 +39,5 @@ const styles = StyleSheet.create({
   sprite: {
     width: 64,
     height: 64,
-    resizeMode: "contain",
   },
 });
