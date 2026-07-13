@@ -32,7 +32,6 @@ export default function MapScreen() {
     permissionDenied,
     error,
     openAppSettings,
-    // retry,
     canAskAgain,
   } = useUserLocation();
   const {

@@ -1,14 +1,8 @@
 import { StyleSheet } from "react-native";
 import { Marker } from "react-native-maps";
 import { Image } from "expo-image";
-import { MapMarker } from "../types/map";
 
-type PokemonMapMarkerProps = {
-  marker: MapMarker;
-  opened: boolean;
-  onPressOpen: () => void;
-  onPressShow: () => void;
-};
+import type { PokemonMapMarkerProps } from "../types/map.ts";
 const placeholderImage = require("../../assets/icons/pokemon-marker-placeholder.svg");
 
 export function PokemonMapMarker({

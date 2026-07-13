@@ -7,3 +7,9 @@ export type MapMarker = {
   imageURL: string;
   opened: boolean;
 };
+export type PokemonMapMarkerProps = {
+  marker: MapMarker;
+  opened: boolean;
+  onPressOpen: () => void;
+  onPressShow: () => void;
+};

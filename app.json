@@ -7,6 +7,14 @@
           "locationWhenInUsePermission": "Allow Pokemony to use your location on the map."
         }
       ],
+      [
+        "expo-media-library",
+        {
+          "photosPermission": "Allow Pokemony to save photos with your favourite Pokémon.",
+          "savePhotosPermission": "Allow Pokemony to save photos with your favourite Pokémon.",
+          "isAccessMediaLocationEnabled": false
+        }
+      ],
       "expo-image"
     ],
     "name": "pokemony",
@@ -19,10 +27,11 @@
     "ios": {
       "infoPlist": {
         "NSCameraUsageDescription": "$(PRODUCT_NAME) needs access to your Camera to capture photos and videos.",
-        "NSMicrophoneUsageDescription": "$(PRODUCT_NAME) needs access to your Microphone to record audio for video recordings."
+        "NSMicrophoneUsageDescription": "$(PRODUCT_NAME) needs access to your Microphone to record audio for video recordings.",
+        "NSPhotoLibraryAddUsageDescription": "Pokemony saves photos with your favourite Pokémon to your photo library."
       },
       "supportsTablet": true,
-      "bundleIdentifier": "com.anonymous.pokemony"
+      "bundleIdentifier": "com.anonymous.pokemonymatiego"
     },
     "android": {
       "adaptiveIcon": {

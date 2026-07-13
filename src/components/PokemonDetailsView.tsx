@@ -17,7 +17,7 @@ import { FavouriteButton } from "./FavouriteButton";
 import { PokemonDetailsContent } from "./PokemonDetailsContent";
 
 const SCREEN_HEIGHT = Dimensions.get("window").height;
-const SHEET_MAX_HEIGHT = SCREEN_HEIGHT * 0.78;
+const SHEET_MAX_HEIGHT = SCREEN_HEIGHT * 0.8;
 
 type PokemonDetailsViewProps = {
   pokemonName: string | null;

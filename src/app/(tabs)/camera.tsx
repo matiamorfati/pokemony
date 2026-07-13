@@ -1,7 +1,8 @@
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import {
   ActivityIndicator,
   Button,
+  type LayoutChangeEvent,
   Pressable,
   StyleSheet,
   Text,
@@ -14,15 +15,20 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { CameraOverlay } from "../../components/CameraOverlay";
 import { useCameraDetection } from "../../hooks/useCameraDetection";
 import { useCameraPermissionHook } from "../../hooks/useCameraPermission";
+import { useCapturedPhotos } from "../../hooks/useCapturedPhotos";
 import { useFavouritePokemon } from "../../hooks/useFavouritePokemon";
+import { useMediaLibraryPermission } from "../../hooks/useMediaLibraryPermission";
 import { usePokemonDetails } from "../../hooks/usePokemonDetails";
+import type { Size } from "../../types/camera";
 
 type CameraFacing = "front" | "back";
 
 export default function CameraScreen() {
   const [cameraFacing, setCameraFacing] = useState<CameraFacing>("front");
+  const [previewSize, setPreviewSize] = useState<Size>({ width: 0, height: 0 });
   const device = useCameraDevice(cameraFacing);
-  const { cameraProps, overlayPosition } = useCameraDetection();
+  const { cameraProps, photoOutput, overlayPosition, hasFace, isFaceReady } =
+    useCameraDetection(previewSize);
   const {
     isLoading,
     error,
@@ -31,6 +37,19 @@ export default function CameraScreen() {
     canRequestPermission,
     openAppSettings,
   } = useCameraPermissionHook();
+  const {
+    isLoading: isMediaPermissionLoading,
+    permissionDenied: mediaPermissionDenied,
+    requestPermission: requestMediaPermission,
+    canRequestPermission: canRequestMediaPermission,
+    openAppSettings: openMediaSettings,
+  } = useMediaLibraryPermission();
+  const {
+    capturePhoto,
+    isCapturing,
+    error: captureError,
+    lastSavedUri,
+  } = useCapturedPhotos();
   const { favouriteName } = useFavouritePokemon();
   const {
     data,
@@ -39,11 +58,53 @@ export default function CameraScreen() {
     refetch,
   } = usePokemonDetails(favouriteName);
   const imageURL = data?.imageURL ?? null;
+  const hasPreviewSize = previewSize.width > 0 && previewSize.height > 0;
+
+  const handlePreviewLayout = useCallback((event: LayoutChangeEvent) => {
+    const { width, height } = event.nativeEvent.layout;
+
+    setPreviewSize((current) =>
+      current.width === width && current.height === height
+        ? current
+        : { width, height },
+    );
+  }, []);
+
   function toggleCameraFacing() {
     setCameraFacing((current) => (current === "front" ? "back" : "front"));
   }
 
-  if (isLoading) {
+  const canCapturePhoto =
+    !!favouriteName &&
+    !!imageURL &&
+    !!overlayPosition &&
+    hasFace &&
+    isFaceReady &&
+    hasPreviewSize &&
+    !isCapturing &&
+    !mediaPermissionDenied;
+
+  async function handleCapturePhoto() {
+    if (
+      !photoOutput ||
+      !overlayPosition ||
+      !imageURL ||
+      !favouriteName ||
+      !hasPreviewSize
+    ) {
+      return;
+    }
+
+    await capturePhoto({
+      photoOutput,
+      overlayPosition,
+      pokemonImageUrl: imageURL,
+      pokemonName: favouriteName,
+      previewSize,
+    });
+  }
+
+  if (isLoading || isMediaPermissionLoading) {
     return (
       <View style={styles.centered}>
         <ActivityIndicator size="large" />
@@ -52,13 +113,31 @@ export default function CameraScreen() {
     );
   }
 
-  if (permissionDenied) {
+  if (permissionDenied || mediaPermissionDenied) {
+    const isCameraDenied = permissionDenied;
+
     return (
       <View style={styles.centered}>
-        <Text style={styles.statusText}>Camera permission denied.</Text>
+        <Text style={styles.statusText}>
+          {isCameraDenied
+            ? "Camera permission denied."
+            : "Photo library permission denied."}
+        </Text>
         <Button
-          title={canRequestPermission ? "Grant permission" : "Open settings"}
-          onPress={canRequestPermission ? requestPermission : openAppSettings}
+          title={
+            (isCameraDenied ? canRequestPermission : canRequestMediaPermission)
+              ? "Grant permission"
+              : "Open settings"
+          }
+          onPress={
+            (isCameraDenied ? canRequestPermission : canRequestMediaPermission)
+              ? isCameraDenied
+                ? requestPermission
+                : requestMediaPermission
+              : isCameraDenied
+                ? openAppSettings
+                : openMediaSettings
+          }
         />
         {error && <Text style={styles.errorText}>{error}</Text>}
       </View>
@@ -74,20 +153,28 @@ export default function CameraScreen() {
   }
 
   const canShowPokemonOverlay = !!imageURL && !isLoadingImage && !isError;
+  const isFrontCamera = cameraFacing === "front";
 
   return (
-    <View style={styles.container}>
-      <Camera
-        {...cameraProps}
-        style={styles.camera}
-        device={device}
-        isActive
-        mirrorMode="auto"
-      />
+    <View style={styles.container} onLayout={handlePreviewLayout}>
+      <View
+        style={[
+          styles.previewLayer,
+          isFrontCamera && styles.previewLayerMirrored,
+        ]}
+      >
+        <Camera
+          {...cameraProps}
+          style={styles.camera}
+          device={device}
+          isActive
+          mirrorMode="off"
+        />
 
-      {canShowPokemonOverlay && (
-        <CameraOverlay imageUrl={imageURL} position={overlayPosition} />
-      )}
+        {canShowPokemonOverlay && (
+          <CameraOverlay imageUrl={imageURL} position={overlayPosition} />
+        )}
+      </View>
 
       <SafeAreaView style={styles.uiLayer} pointerEvents="box-none">
         <View style={styles.topBar}>
@@ -116,15 +203,40 @@ export default function CameraScreen() {
               <Button title="Retry" onPress={() => refetch()} />
             </View>
           )}
+          {favouriteName && !hasFace && (
+            <View style={styles.messageCard}>
+              <Text style={styles.messageTitle}>
+                Point your face at the camera
+              </Text>
+            </View>
+          )}
+          {captureError && (
+            <View style={styles.messageCard}>
+              <Text style={styles.messageTitle}>{captureError}</Text>
+            </View>
+          )}
+          {lastSavedUri && !captureError && (
+            <View style={styles.messageCard}>
+              <Text style={styles.messageTitle}>Photo saved to gallery</Text>
+            </View>
+          )}
         </View>
 
         <View style={styles.bottomBar}>
           <Pressable
-            style={styles.captureButton}
+            style={[
+              styles.captureButton,
+              !canCapturePhoto && styles.captureButtonDisabled,
+            ]}
             accessibilityLabel="Capture photo"
-            disabled
+            disabled={!canCapturePhoto}
+            onPress={handleCapturePhoto}
           >
-            <View style={styles.captureButtonInner} />
+            {isCapturing ? (
+              <ActivityIndicator color="#111827" />
+            ) : (
+              <View style={styles.captureButtonInner} />
+            )}
           </Pressable>
         </View>
       </SafeAreaView>
@@ -136,6 +248,12 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#000000",
+  },
+  previewLayer: {
+    ...StyleSheet.absoluteFill,
+  },
+  previewLayerMirrored: {
+    transform: [{ scaleX: -1 }],
   },
   camera: {
     ...StyleSheet.absoluteFill,
@@ -170,6 +288,8 @@ const styles = StyleSheet.create({
     borderColor: "#FFFFFF",
     alignItems: "center",
     justifyContent: "center",
+  },
+  captureButtonDisabled: {
     opacity: 0.6,
   },
   captureButtonInner: {
